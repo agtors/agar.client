@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>agar.client</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				color: #000;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+				font-weight: bold;
+
+				background-color: #fff;
+				margin: 0px;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+	  <script src="lib/three.min.js"></script>
+	  <script src="lib/MapControls.js"></script>
+	  <script src="lib/WebGL.js"></script>
+	  <script src="lib/dat.gui.min.js"></script>
+	  <script src="lib/stats.min.js"></script>
+	  <script src="lib/threex.rendererstats.js"></script>
+	  <script src="game.js"></script>
+	  <script src="scene.js"></script>
+	  <script>
+		if ( WEBGL.isWebGLAvailable() === false ) {
+			document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+		}
+
+		let region1, region2;
+		let camera, controls, scene, renderer, stats, rendererStats;
+		
+		initScene()
+		initGame()
+		animate()
+
+		function initScene() {
+			  
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color( 0xcccccc );
+			scene.fog = new THREE.FogExp2( 0xcccccc, 0.001 );
+			
+			renderer = new THREE.WebGLRenderer( { antialias: true } );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+			window.addEventListener( 'resize', onWindowResize, false );
+
+			camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+			camera.position.set( 400, 200, 0 );
+			
+			// controls
+			
+			controls = new THREE.MapControls( camera, renderer.domElement );
+			
+			controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+			controls.dampingFactor = 0.25;
+
+			controls.screenSpacePanning = false;
+
+			controls.minDistance = 100;
+			controls.maxDistance = 1000;
+			
+			controls.maxPolarAngle = Math.PI / 2;
+			
+			// Monitoring
+
+			stats = new Stats();
+			stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+			document.body.appendChild( stats.dom );
+
+			rendererStats	= new THREEx.RendererStats()
+			rendererStats.domElement.style.position	= 'absolute'
+			rendererStats.domElement.style.left	= '0px'
+			rendererStats.domElement.style.bottom	= '0px'
+			document.body.appendChild(rendererStats.domElement)
+
+			// Helpers
+
+			let axesHelper = new THREE.AxesHelper(100);
+			scene.add(axesHelper);
+
+			// world
+			var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+			var material = new THREE.MeshBasicMaterial( {color: getRandomColor()} );
+			var sphere = new THREE.Mesh( geometry, material );
+			sphere.position.y = 5
+			scene.add(sphere);
+			
+
+			setUpLight(scene)
+		}
+
+		function onWindowResize() {
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+			
+			renderer.setSize( window.innerWidth, window.innerHeight );
+		}
+
+		function initGame() {
+			region1 = new Region(1, 0, 0, 1600, "ws://127.0.0.1:8000/ws")
+			region2 = new Region(2, 1600, 0, 1600, "ws://127.0.0.1:8000/ws")
+			scene.add(region1.grid())
+			scene.add(region2.grid())			
+		}
+		  
+		function animate() {
+			stats.begin();
+			  
+			requestAnimationFrame( animate );
+
+			controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
+			renderer.render(scene, camera);
+			  
+			rendererStats.update(renderer);
+			stats.end();
+		}
+		</script>
+	</body>
+</html>
