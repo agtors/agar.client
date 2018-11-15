@@ -64,7 +64,7 @@ class Region {
 	      // Should not change
 	      energy.position = e.position
 	      energy.value = e.value
-	      energy.mesh.position.set(e.position.y, 0, -e.position.x)
+	      energy.mesh.position.set(e.position.y, 4, -e.position.x)
 	  }
 	  else {
 	      let energy = new Energy(e.position, e.value, e.ref)
@@ -131,10 +131,10 @@ class Energy {
         this.color = getRandomColor()
         this.actorRef = actorRef
 
-        let geometry = new THREE.BoxGeometry(5, 5, 5)
+        let geometry = new THREE.BoxGeometry(8, 8, 8)
         let material = new THREE.MeshBasicMaterial({color: this.color})
         this.mesh = new THREE.Mesh(geometry, material)
-        this.mesh.position.set(position.y, 0, -position.x)
+        this.mesh.position.set(position.y, 4, -position.x)
     }
 
     getMesh() {
