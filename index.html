@@ -19,32 +19,31 @@
 		</style>
 	</head>
 	<body>
-	  <script src="lib/three.min.js"></script>
-	  <script src="lib/MapControls.js"></script>
-	  <script src="lib/WebGL.js"></script>
-	  <script src="lib/dat.gui.min.js"></script>
-	  <script src="lib/stats.min.js"></script>
-	  <script src="lib/threex.rendererstats.js"></script>
-	  <script src="game.js"></script>
-	  <script src="scene.js"></script>
-	  <script>
+		<script src="lib/three.min.js"></script>
+		<script src="lib/MapControls.js"></script>
+		<script src="lib/WebGL.js"></script>
+		<script src="lib/dat.gui.min.js"></script>
+		<script src="lib/stats.min.js"></script>
+		<script src="lib/threex.rendererstats.js"></script>
+		<script src="game.js"></script>
+		<script src="scene.js"></script>
+		<script>
 		if ( WEBGL.isWebGLAvailable() === false ) {
 			document.body.appendChild( WEBGL.getWebGLErrorMessage() );
 		}
 
 		let region1, region2;
-		let camera, controls, scene, renderer, stats, rendererStats;
-		
+		let camera, controls, scene, renderer, stats, rendererStats, clock;
+
 		initScene()
 		initGame()
 		animate()
 
 		function initScene() {
-			  
 			scene = new THREE.Scene();
 			scene.background = new THREE.Color( 0xcccccc );
 			//scene.fog = new THREE.FogExp2( 0xcccccc, 0.001 );
-			
+
 			renderer = new THREE.WebGLRenderer( { antialias: true } );
 			renderer.setPixelRatio( window.devicePixelRatio );
 			renderer.setSize( window.innerWidth, window.innerHeight );
@@ -53,11 +52,13 @@
 
 			camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
 			camera.position.set( 1600, 600, -1600/2 );
-			
+
+			// Time
+			clock = new THREE.Clock()
+
 			// controls
-			
 			controls = new THREE.MapControls( camera, renderer.domElement );
-			
+
 			controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
 			controls.dampingFactor = 0.25;
 
@@ -65,9 +66,9 @@
 
 			controls.minDistance = 100;
 			controls.maxDistance = 10000;
-			
+
 			controls.maxPolarAngle = Math.PI / 2;
-			
+
 			// Monitoring
 
 			stats = new Stats();
@@ -85,21 +86,14 @@
 			let axesHelper = new THREE.AxesHelper(100);
 			scene.add(axesHelper);
 
-			// world
-			var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-			var material = new THREE.MeshBasicMaterial( {color: getRandomColor()} );
-			var sphere = new THREE.Mesh( geometry, material );
-			sphere.position.y = 5
-			scene.add(sphere);
-			
-
+			// Light	
 			setUpLight(scene)
 		}
 
 		function onWindowResize() {
 			camera.aspect = window.innerWidth / window.innerHeight;
 			camera.updateProjectionMatrix();
-			
+
 			renderer.setSize( window.innerWidth, window.innerHeight );
 		}
 
@@ -107,17 +101,26 @@
 			region1 = new Region(1, 0, 0, 1600, "ws://127.0.0.1:8000/ws", scene)
 			//region2 = new Region(2, 1600, 0, 1600, "ws://127.0.0.1:8000/ws")
 			scene.add(region1.grid())
-			//scene.add(region2.grid())			
+			//scene.add(region2.grid())
 		}
-		  
+
 		function animate() {
 			stats.begin();
-			  
+
+			const delta = clock.getDelta();
+
 			requestAnimationFrame( animate );
 
 			controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
 			renderer.render(scene, camera);
-			  
+
+			// Rotate the energies
+			region1.energies.forEach(e => {
+				let mesh = e.getMesh()
+				mesh.rotation.x += delta * 0.9
+				mesh.rotation.y += delta * 0.9
+			})
+
 			rendererStats.update(renderer);
 			stats.end();
 		}
