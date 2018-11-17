@@ -29,11 +29,12 @@ class Region {
     }
 
     _updatePlayers(playersInfos) {
+        console.log("Number of players: ", playersInfos.length)
         playersInfos.forEach(p => {
 	  let player = this.players.get(p.ref)
 
 	  if (player !== undefined) {
-	      console.log(`player ${p.ref} moved at position x: ${p.position.x} y: ${p.position.y} and weight of ${p.weight}`)
+	      //console.log(`player ${p.ref} moved at position x: ${p.position.x} y: ${p.position.y} and weight of ${p.weight}`)
 	      player.position = p.position
 	      player.velocity = p.velocity
 	      player.weight = p.weight
@@ -47,17 +48,19 @@ class Region {
 	  }
         })
 
-        //remove dead players
-        playersInfos.forEach(p => {
-	  if(!this.players.has(p.ref)) {
-	      this.scene.remove(this.players.get(p.ref).getMesh())
-	      this.players.delete(p.ref)
+        //remove killed players
+        this.players.forEach(p => {
+	  if(playersInfos.find(player => player.ref === p.actorRef) === undefined) {
+	     console.log("remove player: ", p.actorRef)
+	     this.scene.remove(p.getMesh())
+	     this.players.delete(p.actorRef)
 	  }
         })
     }
 
     _updateEnergies(energiesInfos) {
         energiesInfos.forEach(e => {
+	  console.log("number of energies", energiesInfos.length)
 	  let energy = this.energies.get(e.ref)
 
 	  if(energy !== undefined) {
@@ -74,10 +77,11 @@ class Region {
         })
 
         //remove consumed energies
-        energiesInfos.forEach(e => {
-	  if(!this.energies.has(e.ref)) {
-	      this.scene.remove(this.energies.get(e.ref).getMesh())
-	      this.energies.delete(e.ref)
+        this.energies.forEach(e => {
+	  if(energiesInfos.find(energy => energy.ref === e.actorRef) === undefined) {
+	      console.log("remove energy: ", e.actorRef)
+	      this.scene.remove(e.getMesh())
+	      this.energies.delete(e.actorRef)
 	  }
         })
     }
