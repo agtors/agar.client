@@ -51,7 +51,7 @@
 			window.addEventListener( 'resize', onWindowResize, false );
 
 			camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
-			camera.position.set( 1600, 600, -1600/2 );
+			camera.position.set( 3200, 600, -1600/2 );
 
 			// Time
 			clock = new THREE.Clock()
@@ -98,10 +98,10 @@
 		}
 
 		function initGame() {
-			region1 = new Region(1, 0, 0, 1600, "ws://127.0.0.1:8000/ws", scene)
-			//region2 = new Region(2, 1600, 0, 1600, "ws://127.0.0.1:8000/ws")
+			region1 = new Region(1, 0,    0, 1600, "ws://127.0.0.1:8000/ws", scene)
+			region2 = new Region(2, 1600, 0, 1600, "ws://127.0.0.1:8001/ws", scene)
 			scene.add(region1.grid())
-			//scene.add(region2.grid())
+			scene.add(region2.grid())
 		}
 
 		function animate() {
