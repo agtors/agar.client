@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>agar.client</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			body {
-				color: #000;
-				font-family:Monospace;
-				font-size:13px;
-				text-align:center;
-				font-weight: bold;
 
-				background-color: #fff;
-				margin: 0px;
-				overflow: hidden;
-			}
-		</style>
-	</head>
-	<body>
-		<script src="lib/three.min.js"></script>
-		<script src="lib/MapControls.js"></script>
-		<script src="lib/WebGL.js"></script>
-		<script src="lib/dat.gui.min.js"></script>
-		<script src="lib/stats.min.js"></script>
-		<script src="lib/threex.rendererstats.js"></script>
-		<script src="lib/KeyboardState.js"></script>
-		<script src="game.js"></script>
-		<script src="scene.js"></script>
-		<script>
-		if ( WEBGL.isWebGLAvailable() === false ) {
-			document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+<head>
+	<title>agar.client</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<style>
+		body {
+			color: #000;
+			font-family: Monospace;
+			font-size: 13px;
+			text-align: center;
+			font-weight: bold;
+
+			background-color: #fff;
+			margin: 0px;
+			overflow: hidden;
+		}
+	</style>
+</head>
+
+<body>
+	<script src="lib/three.min.js"></script>
+	<script src="lib/MapControls.js"></script>
+	<script src="lib/WebGL.js"></script>
+	<script src="lib/dat.gui.min.js"></script>
+	<script src="lib/stats.min.js"></script>
+	<script src="lib/threex.rendererstats.js"></script>
+	<script src="lib/KeyboardState.js"></script>
+	<script src="game.js"></script>
+	<script src="scene.js"></script>
+	<script>
+		if (WEBGL.isWebGLAvailable() === false) {
+			document.body.appendChild(WEBGL.getWebGLErrorMessage());
 		}
 
 		let region1, region2;
@@ -42,24 +44,24 @@
 
 		function initScene() {
 			scene = new THREE.Scene();
-			scene.background = new THREE.Color( 0xcccccc );
+			scene.background = new THREE.Color(0xcccccc);
 			//scene.fog = new THREE.FogExp2( 0xcccccc, 0.001 );
 
-			renderer = new THREE.WebGLRenderer( { antialias: true } );
-			renderer.setPixelRatio( window.devicePixelRatio );
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement );
-			window.addEventListener( 'resize', onWindowResize, false );
+			renderer = new THREE.WebGLRenderer({ antialias: true });
+			renderer.setPixelRatio(window.devicePixelRatio);
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+			window.addEventListener('resize', onWindowResize, false);
 
-			camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
-			camera.position.set( 1600, 600, -1600/2 );
+			camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
+			camera.position.set(1600, 600, -1600 / 2);
 
 			// Time
 			clock = new THREE.Clock()
 
 			// controls
-		    keyboard = new KeyboardState();
-		    controls = new THREE.MapControls( camera, renderer.domElement );
+			keyboard = new KeyboardState();
+			controls = new THREE.MapControls(camera, renderer.domElement);
 
 			controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
 			controls.dampingFactor = 0.25;
@@ -74,13 +76,13 @@
 			// Monitoring
 
 			stats = new Stats();
-			stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-			document.body.appendChild( stats.dom );
+			stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+			document.body.appendChild(stats.dom);
 
-			rendererStats	= new THREEx.RendererStats()
-			rendererStats.domElement.style.position	= 'absolute'
-			rendererStats.domElement.style.left	= '0px'
-			rendererStats.domElement.style.bottom	= '0px'
+			rendererStats = new THREEx.RendererStats()
+			rendererStats.domElement.style.position = 'absolute'
+			rendererStats.domElement.style.left = '0px'
+			rendererStats.domElement.style.bottom = '0px'
 			document.body.appendChild(rendererStats.domElement)
 
 			// Helpers
@@ -96,7 +98,7 @@
 			camera.aspect = window.innerWidth / window.innerHeight;
 			camera.updateProjectionMatrix();
 
-			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.setSize(window.innerWidth, window.innerHeight);
 		}
 
 		function initGame() {
@@ -111,15 +113,15 @@
 
 			const delta = clock.getDelta();
 
-			requestAnimationFrame( animate );
+			requestAnimationFrame(animate);
 
 			keyboard.update()
 
 			if (keyboard.up("R")) {
 				//TODO: Improve the lookAt
 				camera.position.set(2700, 1075, -900);
-				camera.lookAt(0, 0, -1600/2)
-			}				
+				camera.lookAt(0, 0, -1600 / 2)
+			}
 
 			controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
 			renderer.render(scene, camera);
@@ -134,6 +136,7 @@
 			rendererStats.update(renderer);
 			stats.end();
 		}
-		</script>
-	</body>
+	</script>
+</body>
+
 </html>

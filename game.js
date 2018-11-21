@@ -7,7 +7,7 @@ class Region {
         this.size = size
         this.color = getRandomColor()
         this.gridHelper = new THREE.GridHelper(size, size / 10, this.color, this.color)
-        this.gridHelper.position.set(x + size/2, y, -size/2)
+        this.gridHelper.position.set(x + size / 2, y, -size / 2)
 
         this.players = new Map()
         this.energies = new Map()
@@ -31,58 +31,58 @@ class Region {
     _updatePlayers(playersInfos) {
         console.log("Number of players: ", playersInfos.length)
         playersInfos.forEach(p => {
-	  let player = this.players.get(p.ref)
+            let player = this.players.get(p.ref)
 
-	  if (player !== undefined) {
-	      //console.log(`player ${p.ref} moved at position x: ${p.position.x} y: ${p.position.y} and weight of ${p.weight}`)
-	      player.position = p.position
-	      player.velocity = p.velocity
-	      player.weight = p.weight
-	      player.mesh.geometry.radius = p.weight
-	      player.mesh.position.set(p.position.y, p.weight / 2, -p.position.x)
-	  }
-	  else {
-	      let player = new Player(p.position, 0, p.weight, p.ref)
-	      this.players.set(p.ref, player)
-	      this.scene.add(player.getMesh())
-	  }
+            if (player !== undefined) {
+                //console.log(`player ${p.ref} moved at position x: ${p.position.x} y: ${p.position.y} and weight of ${p.weight}`)
+                player.position = p.position
+                player.velocity = p.velocity
+                player.weight = p.weight
+                player.mesh.geometry.radius = p.weight
+                player.mesh.position.set(p.position.y, p.weight / 2, -p.position.x)
+            }
+            else {
+                let player = new Player(p.position, 0, p.weight, p.ref)
+                this.players.set(p.ref, player)
+                this.scene.add(player.getMesh())
+            }
         })
 
         //remove killed players
         this.players.forEach(p => {
-	  if(playersInfos.find(player => player.ref === p.actorRef) === undefined) {
-	     console.log("remove player: ", p.actorRef)
-	     this.scene.remove(p.getMesh())
-	     this.players.delete(p.actorRef)
-	  }
+            if (playersInfos.find(player => player.ref === p.actorRef) === undefined) {
+                console.log("remove player: ", p.actorRef)
+                this.scene.remove(p.getMesh())
+                this.players.delete(p.actorRef)
+            }
         })
     }
 
     _updateEnergies(energiesInfos) {
         energiesInfos.forEach(e => {
-	  console.log("number of energies", energiesInfos.length)
-	  let energy = this.energies.get(e.ref)
+            console.log("number of energies", energiesInfos.length)
+            let energy = this.energies.get(e.ref)
 
-	  if(energy !== undefined) {
-	      // Should not change
-	      energy.position = e.position
-	      energy.value = e.value
-	      energy.mesh.position.set(e.position.y, 4, -e.position.x)
-	  }
-	  else {
-	      let energy = new Energy(e.position, e.value, e.ref)
-	      this.energies.set(e.ref, energy)
-	      this.scene.add(energy.mesh)
-	  }
+            if (energy !== undefined) {
+                // Should not change
+                energy.position = e.position
+                energy.value = e.value
+                energy.mesh.position.set(e.position.y, 4, -e.position.x)
+            }
+            else {
+                let energy = new Energy(e.position, e.value, e.ref)
+                this.energies.set(e.ref, energy)
+                this.scene.add(energy.mesh)
+            }
         })
 
         //remove consumed energies
         this.energies.forEach(e => {
-	  if(energiesInfos.find(energy => energy.ref === e.actorRef) === undefined) {
-	      console.log("remove energy: ", e.actorRef)
-	      this.scene.remove(e.getMesh())
-	      this.energies.delete(e.actorRef)
-	  }
+            if (energiesInfos.find(energy => energy.ref === e.actorRef) === undefined) {
+                console.log("remove energy: ", e.actorRef)
+                this.scene.remove(e.getMesh())
+                this.energies.delete(e.actorRef)
+            }
         })
     }
 
@@ -136,7 +136,7 @@ class Energy {
         this.actorRef = actorRef
 
         let geometry = new THREE.BoxGeometry(8, 8, 8)
-        let material = new THREE.MeshBasicMaterial({color: this.color})
+        let material = new THREE.MeshBasicMaterial({ color: this.color })
         this.mesh = new THREE.Mesh(geometry, material)
         this.mesh.position.set(position.y, 4, -position.x)
     }
