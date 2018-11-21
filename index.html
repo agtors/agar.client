@@ -34,7 +34,7 @@
 		}
 
 		let region1, region2;
-		let camera, controls, scene, renderer, stats, rendererStats, clock;
+		let camera, controls, scene, renderer, stats, rendererStats, clock, keyboard;
 
 		initScene()
 		initGame()
@@ -58,7 +58,8 @@
 			clock = new THREE.Clock()
 
 			// controls
-			controls = new THREE.MapControls( camera, renderer.domElement );
+		    keyboard = new KeyboardState();
+		    controls = new THREE.MapControls( camera, renderer.domElement );
 
 			controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
 			controls.dampingFactor = 0.25;
@@ -100,9 +101,9 @@
 
 		function initGame() {
 			region1 = new Region(1, 0, 0, 1600, "ws://127.0.0.1:8000/ws", scene)
-			//region2 = new Region(2, 1600, 0, 1600, "ws://127.0.0.1:8000/ws")
+			region2 = new Region(2, 1600, 0, 1600, "ws://127.0.0.1:8001/ws")
 			scene.add(region1.grid())
-			//scene.add(region2.grid())
+			scene.add(region2.grid())
 		}
 
 		function animate() {
@@ -111,6 +112,14 @@
 			const delta = clock.getDelta();
 
 			requestAnimationFrame( animate );
+
+			keyboard.update()
+
+			if (keyboard.up("R")) {
+				//TODO: Improve the lookAt
+				camera.position.set(2700, 1075, -900);
+				camera.lookAt(0, 0, -1600/2)
+			}				
 
 			controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
 			renderer.render(scene, camera);
